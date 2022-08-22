@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../animalDetail.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+import '../details/animalDetail.dart';
+//import 'package:firebase_admob/firebase_admob.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
+import 'package:intl/intl.dart';
+import '../layout/widgets.dart';
+import '../models/animals_articles_model.dart';
 import '../util/constants/size_config.dart';
 
 const String testDevice = 'MobileId';
@@ -20,68 +23,103 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var myData = new List();
   var searchList = new List();
+
   TextEditingController editingController = new TextEditingController();
-  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    testDevices: testDevice != null ? <String>[testDevice] : null,
-    nonPersonalizedAds: true,
-    keywords: <String>['Animal', 'Encyclopedia'],
-  );
+  // static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  //   testDevices: testDevice != null ? <String>[testDevice] : null,
+  //   nonPersonalizedAds: true,
+  //   keywords: <String>['Animal', 'Encyclopedia'],
+  // );
+  //
+  // BannerAd _bannerAd;
+  // InterstitialAd _interstitialAd;
+  //
+  // BannerAd createBannerAd() {
+  //   return BannerAd(
+  //       adUnitId: "ca-app-pub-5295564814934759/2801472326",
+  //       //Change BannerAd adUnitId with Admob ID
+  //       size: AdSize.banner,
+  //       targetingInfo: targetingInfo,
+  //       listener: (MobileAdEvent event) {
+  //         print("BannerAd $event");
+  //       });
+  // }
 
-  BannerAd _bannerAd;
-  InterstitialAd _interstitialAd;
-
-  BannerAd createBannerAd() {
-    return BannerAd(
-        adUnitId: "ca-app-pub-5295564814934759/2801472326",
-        //Change BannerAd adUnitId with Admob ID
-        size: AdSize.banner,
-        targetingInfo: targetingInfo,
-        listener: (MobileAdEvent event) {
-          print("BannerAd $event");
-        });
-  }
-
-  InterstitialAd createInterstitialAd() {
-    return InterstitialAd(
-        adUnitId: "ca-app-pub-5295564814934759/9175308984",
-        //Change Interstitial AdUnitId with Admob ID
-        targetingInfo: targetingInfo,
-        listener: (MobileAdEvent event) {
-          print("IntersttialAd $event");
-        });
-  }
+  // InterstitialAd createInterstitialAd() {
+  //   return InterstitialAd(
+  //       adUnitId: "ca-app-pub-5295564814934759/9175308984",
+  //       //Change Interstitial AdUnitId with Admob ID
+  //       targetingInfo: targetingInfo,
+  //       listener: (MobileAdEvent event) {
+  //         print("IntersttialAd $event");
+  //       });
+  // }
 
   @override
   void initState() {
-    FirebaseAdMob.instance
-        .initialize(appId: "ca-app-pub-5295564814934759~3504497132");
-    //Change appId With Admob Id
-    _bannerAd = createBannerAd()
-      ..load()
-      ..show();
+    // FirebaseAdMob.instance
+    //     .initialize(appId: "ca-app-pub-5295564814934759~3504497132");
+    // //Change appId With Admob Id
+    // _bannerAd = createBannerAd()
+    //   ..load()
+    //   ..show();
+    getArticles();
     super.initState();
   }
 
   @override
   void dispose() {
-    _bannerAd.dispose();
-    _interstitialAd.dispose();
+    // _bannerAd.dispose();
+    // _interstitialAd.dispose();
     super.dispose();
   }
 
+  getArticles() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('animals')
+        .orderBy("name", //descending: true
+    )
+        .get();
+
+    List<Articles> _list = [];
+
+    snapshot.docs.forEach((document) {
+      Articles articles = Articles.fromMap(document.data() as Map<String, dynamic>);
+      _list.add(articles);
+    });
+    if (_list.length == 0) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      setState(() {
+        articlesForDisplay = _list;
+        // songsForDisplay = songs;
+      });
+    }
+
+    // if (!widget.showList) {
+    //   setState(() {
+    //     _diceface = _random.nextInt(songs.length);
+    //   });
+    //   // var _rnd;
+    //   // _diceface = _rnd.nextInt(6) +1 ;
+    //   currentIndex = _diceface;
+    //   // Navigator.of(context).push(MaterialPageRoute(
+    //   //     builder: (context) => StreamPlayer(
+    //   //         changeTrack: changeTrack,
+    //   //         songInfo: songs[currentIndex],
+    //   //         key: key)));
+    // }
+
+// foodNotifier.foodList = _foodList;
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Home',
-          style: TextStyle(
-              fontSize: displayHeight(context) * .025,
-              color: Colors.white),
-        ),
-        backgroundColor: Color(0xFF4E342E),
-      ),
+      appBar: new ReusableWidgets().getAppBar(context,'Home',false),
+
       body: Container(
         //padding: EdgeInsets.fromLTRB(0, 0, 0, 48),
         child: Column(
@@ -111,8 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: EdgeInsets.fromLTRB(10, 0, 5, 0),
                           child: Image(
                             image: AssetImage("assets/images/search.png"),
-                            width: 20,
-                            height: 20,
+                              height: displayHeight(context) * .045,
+                              width: displayWidth(context) * .045,
                           )),
                       SizedBox(
                         width: 15,
@@ -120,15 +158,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                           child: Container(
                         child: TextField(
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(
+                              fontSize: displayHeight(context) * .022,
+                              color: Colors.black87),
                           textInputAction: TextInputAction.search,
                           decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xFF4E342E)),
-                            ),
                             border: UnderlineInputBorder(
                                 borderSide: BorderSide.none
                             ),
@@ -166,11 +200,13 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    myData.forEach((animalData) {
-      print('name ${animalData["name"].toString()}  $value');
+    articlesForDisplay.forEach((animalData) {
+      print('name ${animalData.name.toString()}  $value');
       if (/*animalData["name"].toString().contains(value) ||*/
-          animalData["name"].toString().toUpperCase().startsWith(value) ||
-              animalData["name"].toString().toLowerCase().startsWith(value)) {
+          animalData.other_name.toString().toUpperCase().startsWith(value)
+              // || animalData..toString().toLowerCase().startsWith(value)
+      )
+      {
         searchList.add(animalData);
       }
     });
@@ -181,68 +217,60 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
    _buildGridView() {
-    return FutureBuilder(
-      builder: (context, snapshot) {
-        myData = json.decode(snapshot.data.toString());
+    return MasonryGridView.count(
+       crossAxisCount: 3,
+       crossAxisSpacing: 10,
+       mainAxisSpacing: 12,
 
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: MasonryGridView.count(
-            crossAxisCount: 3,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 12,
+       itemCount: articlesForDisplay == null
+           ? 0
+           : articlesForDisplay.length,
+       itemBuilder: (context, int index) {
 
-            itemCount: myData == null
-                ? 0
-                : myData.length,
-            itemBuilder: (context, int index) {
+         return GestureDetector(
+           onTap: (){
+             // createInterstitialAd()
+             //   ..load()
+             //   ..show();
+             Navigator.push(
+                 context,
+                 MaterialPageRoute(
+                     builder: (context) => AnimalDetail(
+                         imageName1: articlesForDisplay[index].animalImage1,
+                         imageName2: articlesForDisplay[index].animalImage1,
+                         imageName3: articlesForDisplay[index].animalImage1,
+                         name: articlesForDisplay[index].name,
+                         otherName: articlesForDisplay[index].other_name,
+                         detail: articlesForDisplay[index].detail,
+                         scientificName: articlesForDisplay[index].scientific_name,
+                         familyName: articlesForDisplay[index].family,
+                         kingdom: articlesForDisplay[index].kingdom,
+                         weight: articlesForDisplay[index].weight,
+                         height: articlesForDisplay[index].height,
+                         lifeSpan:articlesForDisplay[index].life_span,
+                         nbrOfSpieces: articlesForDisplay[index].no_of_species,
+                         location: articlesForDisplay[index].location,
 
-              return GestureDetector(
-                onTap: (){
-                  createInterstitialAd()
-                    ..load()
-                    ..show();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AnimalDetail(
-                              imageName1: myData[index]["imageName1"],
-                              imageName2: myData[index]["imageName2"],
-                              imageName3: myData[index]["imageName3"],
-                              name: myData[index]["name"],
-                              scientificName: myData[index]
-                              ["scientific_name"],
-                              familyName: myData[index]["family"],
-                              kingdom: myData[index]["kingdom"],
-                              weight: myData[index]["weight"],
-                              height: myData[index]["height"],
-                              lifeSpan: myData[index]["life_span"],
-                              otherName: myData[index]["other_name"],
-                              nbrOfSpieces: myData[index]["no_of_species"],
-                              location: myData[index]["location"],
-                              detail: myData[index]["detail"])));
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  child: FadeInImage.memoryNetwork(
-                    placeholder: kTransparentImage,
-                    image: (myData[index]["imageName1"]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                     )
+                 )
+             );
+           },
+           child: ClipRRect(
+             borderRadius: BorderRadius.all(Radius.circular(10)),
+             child: FadeInImage.memoryNetwork(
+               placeholder: kTransparentImage,
+               image: (articlesForDisplay[index].animalImage1),
+               fit: BoxFit.cover,
+             ),
+           ),
 
-              );
-            },
+         );
+       },
 
-            // staggeredTileBuilder: (index) {
-            //   return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
-            // }
-          ),
-        );
-      },
-      future:
-      DefaultAssetBundle.of(context).loadString("assets/res/animal.json"),
-    );
+       // staggeredTileBuilder: (index) {
+       //   return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
+       // }
+     );
   }
 
   searchListView() {

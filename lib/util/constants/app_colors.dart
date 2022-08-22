@@ -17,6 +17,6 @@ const textColorWhite = Color(0xffFFFFFF);
 const colorPrimary = Color(0xFF4E342E);
 const colorSecondary = Color(0xFF6D4C41);
 const colorBottomTabBtnLight = Color(0xFFBCAAA4);
-const colorList = Color(0xffF8BBD0);
-
-const Grey_300 = Color(0xffE0E0E0);
+const colorLight = Color(0xFFD7CCC8);
+const colorVeryLight = Color(0xFFEFEBE9);
+const colorList = Color(0xFFEFEBE9);

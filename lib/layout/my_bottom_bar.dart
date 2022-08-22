@@ -4,10 +4,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../dashboard/about_us.dart';
+
+import '../dashboard/about_app.dart';
+
 import '../dashboard/home.dart';
-import '../dashboard/videos.dart';
+
+import '../dashboard/videos_list.dart';
+
 import '../util/constants/app_colors.dart';
+import '../util/constants/size_config.dart';
 
 
 
@@ -25,10 +30,17 @@ class _MyBottomBarDemoState extends State<AppEntryPoint> {
 
   List<Widget> tabPages = [
     HomeScreen(),
-    AllVideos(),
+
+
+    AllVideoScreen(),
+    //VideoScreen(),
+
     AboutUs(),
 
 
+    //AllVideos(),
+    //ShrinkTopListPage(),
+    //CircularListPage(),
   ];
 
   @override
@@ -36,44 +48,6 @@ class _MyBottomBarDemoState extends State<AppEntryPoint> {
     super.initState();
     _pageController = PageController(initialPage: widget.pageIndex);
 
-    setState(() {
-      //_loading = true;
-      // Timer(Duration(microseconds: 1000), () async{
-      //   await ChatServices.getMsgList().then((allClientLists){
-      //     //setState(() {
-      //       setState(() {
-      //         listAllMessages = allClientLists;
-      //         if(listAllMessages.length>0){
-      //           //_msgForDisplay =listAllMessages;
-      //          if(MessageListModel != null   ){
-      //            for(int i=0; listAllMessages.length>i;i++ ){
-      //              msgList = listAllMessages[i];
-      //              msgCount = msgList.count;
-      //              totalCount =  totalCount+msgCount;
-      //            }
-      //
-      //              // msgList = listAllMessages[0];
-      //
-      //            if(totalCount==0){
-      //              ConstantVariables.KEY_msgNotification = false;
-      //            }else{
-      //              ConstantVariables.KEY_msgNotification = true;
-      //            }
-      //          }
-      //         }
-      //         // if(listPrevMessages.length>0){
-      //         //   _msgPrevForDisplay =listPrevMessages;
-      //         //   isPreviousMsg = true;
-      //         // }else{
-      //         //   isPreviousMsg = false;
-      //         // }
-      //     //  });
-      //      // _loading = false;
-      //     });
-      //   });
-      //
-      // });
-    });
   }
 
   @override
@@ -90,21 +64,25 @@ class _MyBottomBarDemoState extends State<AppEntryPoint> {
       //   backgroundColor: Colors.deepPurple,
       // ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedLabelStyle: TextStyle(fontSize: displayHeight(context) * .018,color: colorPrimary,fontWeight: FontWeight.w500),
+        unselectedLabelStyle: TextStyle(fontSize: displayHeight(context) * .014,color: colorPrimary,fontWeight: FontWeight.w400),
+        iconSize: displayHeight(context) * .025,selectedItemColor: colorPrimary,unselectedItemColor: colorSecondary,
+
         currentIndex: widget.pageIndex,
         onTap: onTabTapped,
-        backgroundColor: Colors.white,
+        backgroundColor: colorVeryLight,
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined,color: colorBottomTabBtnLight),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined,color: colorLight),
               activeIcon: Icon(Icons.home_filled,color: colorSecondary),
-              label: "Home",backgroundColor: colorSecondary),
-             // title: Text("Home",style: TextStyle(color: Color.fromRGBO(185, 185, 186, 1)),),backgroundColor: Colors.white),
+              label: "Home",),
+          // title: Text("Home",style: TextStyle(color: Color.fromRGBO(185, 185, 186, 1)),),backgroundColor: Colors.white),
 
-          BottomNavigationBarItem(icon: Icon(Icons.video_camera_back_outlined,color: colorBottomTabBtnLight),
-              activeIcon: Icon(Icons.video_camera_back_rounded,color: colorSecondary),
-              label: "Videos",),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline_outlined,color: colorBottomTabBtnLight),
+          BottomNavigationBarItem(icon: Icon(Icons.video_camera_back_outlined,color: colorLight),
+            activeIcon: Icon(Icons.video_camera_back_rounded,color: colorSecondary),
+            label: "Videos",),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline_outlined,color: colorLight),
               activeIcon: Icon(Icons.person,color: colorSecondary),
-              label: "About Us",backgroundColor: colorBottomTabBtnLight),
+              label: "About Us"),
           // BottomNavigationBarItem(icon: Icon(Icons.group_outlined,color: Color.fromRGBO(185, 185, 186, 1)),
           //     activeIcon: Icon(Icons.group,color: Colors.black),
           //     title: Text("Social",style: TextStyle(color: Color.fromRGBO(185, 185, 186, 1)))),
