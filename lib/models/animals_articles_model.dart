@@ -39,14 +39,11 @@ class Articles {
     scientific_name= data['scientific_name'];
     family= data['family'] ;
     kingdom= data['kingdom'] ;
-    height= data['detaiheightl'] ;
+    height= data['height'] ;
     weight= data['weight'];
     life_span= data['life_span'] ;
     location= data['location'];
     no_of_species= data['no_of_species'];
-    life_span= data['life_span'] ;
-    location= data['location'];
-
 
   }
 

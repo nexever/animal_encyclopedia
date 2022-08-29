@@ -5,15 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_youtube/flutter_youtube.dart';
 
-
-
 import '../details/youtubePlayer.dart';
 import '../layout/widgets.dart';
 import '../models/animals_articles_model.dart';
 import '../models/animals_vedios_model.dart';
 import '../util/constants/app_colors.dart';
 import '../util/constants/size_config.dart';
-
 
 class AllVideoScreen extends StatefulWidget {
   @override
@@ -47,8 +44,6 @@ class _VideoScreenState extends State<AllVideoScreen> {
   //       });
   // }
 
-
-
   @override
   void initState() {
     //Change appId With Admob Id
@@ -56,16 +51,16 @@ class _VideoScreenState extends State<AllVideoScreen> {
     // createInterstitialAd()
     //   ..load()
     //   ..show();
-   // getAboutUs();
+    // getAboutUs();
     super.initState();
     selectedDialIndex = 1;
   }
+
   @override
   void dispose() {
     //_interstitialAd.dispose();
     super.dispose();
   }
-
 
 //   getAboutUs() async {
 //     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -111,11 +106,8 @@ class _VideoScreenState extends State<AllVideoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-
-      appBar: new ReusableWidgets().getAppBar(context,'Videos',false),
+      appBar: new ReusableWidgets().getAppBar(context, 'Videos', false),
       body: Container(
-
         // decoration: BoxDecoration(
         //     color: Color.fromRGBO(24, 27, 44, 1),
         //     image: new DecorationImage(
@@ -136,74 +128,190 @@ class _VideoScreenState extends State<AllVideoScreen> {
     );
   }
 
-
   Widget buildList(BuildContext context, index) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Card(
-        color: colorList,
+      child: Stack(
+        children: [
+          Positioned(
+            top: displayHeight(context) * .010,
+            right: 1,
+            left: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Card(
+                elevation: 2.0,
+                color: colorList,
+                shape: StadiumBorder(
+                  side: BorderSide(
+                    color: Colors.white,
+                    width: 0.1,
+                  ),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(60.0),
+                  onTap: () {
+                    {
+                      // createInterstitialAd()
+                      //   ..load()
+                      //   ..show();
 
-        shape: StadiumBorder(
-          side: BorderSide(
-            color: Colors.white,
-            width: 0.1,
-          ),
-        ),
-        child: ListTile(
-          onTap: () {
-            {
-              // createInterstitialAd()
-              //   ..load()
-              //   ..show();
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ArticlesDetails(
+                      //             title: articlesForDisplay[index].title,
+                      //             heading: articlesForDisplay[index].heading,
+                      //             detail: articlesForDisplay[index].detail,
+                      //             imagepath: articlesForDisplay[index].articleImage1)));
 
-              Navigator.push(
-                  context,
-                MaterialPageRoute(builder: (context) => MyYoutubePlayer(url: "https://www.youtube.com/watch?v="+(articlesForDisplay[index].video_url),title: (articlesForDisplay[index].name))),
-//
-                  // MaterialPageRoute(
-                  //     builder: (context) => ArticlesDetails(
-                  //         title: articlesForDisplay[index].title,
-                  //         heading: articlesForDisplay[index].heading,
-                  //         detail: articlesForDisplay[index].detail,
-                  //         imagepath: articlesForDisplay[index].articleImage1))
-              );
-            }
-          },
-          shape: StadiumBorder(
-            side: BorderSide(
-              color: Colors.white,
-              width: 0.1,
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyYoutubePlayer(
+                                url: "https://www.youtube.com/watch?v=" +
+                                    (articlesForDisplay[index].video_url),
+                                title: (articlesForDisplay[index].name))),
+                      );
+                    }
+                  },
+                  child: Container(
+                    // color: Colors.red,
+                    height: displayHeight(context) * .04,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: displayHeight(context) * .03,
+                          ),
+                          Container(
+                            //   color: Colors.red,
+                            width: displayHeight(context) * .3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: textHeading1(
+                                context,
+                                articlesForDisplay[index].name,
+                              ),
+                            ),
+                          ),
+
+                          Opacity(
+                              opacity: 0.1,
+                              child: Image.asset("assets/images/youtube.png",scale: 2,)
+                            // Icon(
+                            //   Icons.video_camera_back_outlined,
+                            //   color: colorWhite,
+                            //   size: 20,
+                            // )
+                          ),
+                          // Opacity(
+                          //     opacity: 0.3,
+                          //     child: AssetImage('icons/heart.png', package: 'my_icons');
+                          //     // Icon(
+                          //     //   Icons.video_camera_back_outlined,
+                          //     //   color: colorSecondary,
+                          //     //   size: displayHeight(context) * .03,
+                          //     // )
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                //
+              ),
             ),
           ),
-          leading: CircleAvatar(radius:20,
-            backgroundColor: colorVeryLight,
-            backgroundImage: NetworkImage(
-                articlesForDisplay[index].animalImage1,scale: 8
+          Hero(
+            tag: "background_${articlesForDisplay[index].animalImage1}",
+            child: Card(
+              elevation: 8,
+              color: colorList,
+              shape: StadiumBorder(
+                side: BorderSide(
+                  color: Colors.white,
+                  width: 0.9,
+                ),
+              ),
+              child:
+                  // FadeInImage.assetNetwork(
+                  //     placeholder: "assets/images/animalloadder.gif",
+                  //     image: articlesForDisplay[index].animalImage1,
+                  //     height: displayHeight(context) * .15,
+                  //     width: displayWidth(context) * .3,
+                  //     fit: BoxFit.cover),
+                  CircleAvatar(
+                radius: displayHeight(context) * .030,
+                backgroundColor: colorVeryLight,
+                backgroundImage: NetworkImage(
+                  articlesForDisplay[index].animalImage1,
+                  //scale: 9,
+                ),
+              ),
             ),
           ),
-          title: SizedBox(
-            width: displayHeight(context) * .3,
-            child: textHeading1(context, articlesForDisplay[index].name,),
-          ),
-          // subtitle: Expanded(
-          //     child: Text(
-          //       articlesForDisplay[index].heading,
-          //       style: TextStyle(color: Colors.white30),
-          //     )),
-          // dense: true,
-          trailing: Opacity(
-              opacity: 0.3,
-              child: Icon(
-                Icons.video_camera_back_outlined,
-                color: colorPrimary,
-                size: 20,
-              )),
-        ),
-        elevation: 10.0, //
+        ],
       ),
+      // child: Card(
+      //   color: colorList,
+      //
+      //   shape: StadiumBorder(
+      //     side: BorderSide(
+      //       color: Colors.white,
+      //       width: 0.1,
+      //     ),
+      //   ),
+      //   child: ListTile(
+      //     onTap: () {
+      //       {
+      //         // createInterstitialAd()
+      //         //   ..load()
+      //         //   ..show();
+      //
+      //         Navigator.push(
+      //             context,
+      //           MaterialPageRoute(builder: (context) => MyYoutubePlayer(url: "https://www.youtube.com/watch?v="+(articlesForDisplay[index].video_url),title: (articlesForDisplay[index].name))),
+      //
+      //         );
+      //       }
+      //     },
+      //     shape: StadiumBorder(
+      //       side: BorderSide(
+      //         color: Colors.white,
+      //         width: 0.1,
+      //       ),
+      //     ),
+      //     leading: CircleAvatar(radius:60,
+      //       backgroundColor: colorVeryLight,
+      //       backgroundImage: NetworkImage(
+      //           articlesForDisplay[index].animalImage1,scale: 8
+      //       ),
+      //     ),
+      //     title: SizedBox(
+      //       width: displayHeight(context) * .3,
+      //       child: textHeading1(context, articlesForDisplay[index].name,),
+      //     ),
+      //     // subtitle: Expanded(
+      //     //     child: Text(
+      //     //       articlesForDisplay[index].heading,
+      //     //       style: TextStyle(color: Colors.white30),
+      //     //     )),
+      //     // dense: true,
+      //     trailing: Opacity(
+      //         opacity: 0.3,
+      //         child: Icon(
+      //           Icons.video_camera_back_outlined,
+      //           color: colorPrimary,
+      //           size: 20,
+      //         )),
+      //   ),
+      //   elevation: 10.0, //
+      // ),
     );
   }
-
 
   // void playYoutubeVideo(String videoEndPoint) {
   //   FlutterYoutube.playYoutubeVideoByUrl(
@@ -221,17 +329,17 @@ class _VideoScreenState extends State<AllVideoScreen> {
     myData.forEach((animalData) {
       print('name ${animalData.video_name.toString()}  $value');
       if (/*animalData["name"].toString().contains(value) ||*/
-      animalData.video_name.toString().toUpperCase().startsWith(value)
-      // ||
-      // animalData..toString().toLowerCase().startsWith(value)
-      )
-      {
+          animalData.video_name.toString().toUpperCase().startsWith(value)
+          // ||
+          // animalData..toString().toLowerCase().startsWith(value)
+          ) {
         searchList.add(animalData);
       }
     });
 
     setState(() {});
   }
+
   searchListView() {
     return Container(
         child: new ListView.builder(
@@ -248,7 +356,11 @@ class _VideoScreenState extends State<AllVideoScreen> {
                         Navigator.push(
                           context,
                           // MaterialPageRoute(builder: (context) => MyYoutubePlayer(url: "https://www.youtube.com/watch?v=S50SkXhWjEQ",title: "Testing youtubeTitle",)),
-                          MaterialPageRoute(builder: (context) => MyYoutubePlayer(url: "https://www.youtube.com/watch?v="+(searchList[index].video_url),title: (searchList[index].video_name))),
+                          MaterialPageRoute(
+                              builder: (context) => MyYoutubePlayer(
+                                  url: "https://www.youtube.com/watch?v=" +
+                                      (searchList[index].video_url),
+                                  title: (searchList[index].video_name))),
                         );
                         // playYoutubeVideo(searchList[index]["imageName1"]);
                         // playYoutubeVideo("ZWc8mrH6xLs");
@@ -268,11 +380,12 @@ class _VideoScreenState extends State<AllVideoScreen> {
                                           fit: BoxFit.cover,
                                           image: NetworkImage(
                                             // 'https://i.ytimg.com/an_webp/ZWc8mrH6xLs/mqdefault_6s.webp?du=3000&sqp=CPemwpcG&rs=AOn4CLD5fzlLlRH2y5_qpeffUSzRHntfkw'
-                                           // "https://i.ytimg.com/an_webp/" +
-                                                myData[index].video_logo,
+                                            // "https://i.ytimg.com/an_webp/" +
+                                            myData[index].video_logo,
                                           )))),
                             ),
-                            Flexible(child: Column(
+                            Flexible(
+                                child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
@@ -290,8 +403,8 @@ class _VideoScreenState extends State<AllVideoScreen> {
                             ))
                           ],
                         ),
-                      )),)
-                ,
+                      )),
+                ),
               );
             }));
   }
